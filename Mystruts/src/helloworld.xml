@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+"http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+
+	<package name="default" namespace="/" extends="struts-default">
+		<!-- 注册拦截器 -->
+		<interceptors>
+			<interceptor name="timer" class="dk.interceptor.TimeInterceptor"></interceptor>
+			<interceptor name="auth" class="dk.interceptor.AuthInterceptor"></interceptor>
+			<!-- 自定义拦截器栈 -->
+			<interceptor-stack name="mystack">
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+				<interceptor-ref name="auth"></interceptor-ref>
+			</interceptor-stack>
+			
+		</interceptors>
+	
+		<default-action-ref name="error"></default-action-ref>
+		<action name="error">
+			<result>/error.jsp</result>
+		</action> 
+		
+		
+		<action name="*_*" method="{2}" class="dk.action.{1}Action">
+			<result>/result.jsp</result>
+			<result name="add">/{2}.jsp</result>
+			<result name="update">/{2}.jsp</result>
+			<!-- <result name="login">/{2}.jsp</result> -->
+		</action>
+		
+		<action name="LoginAction"  method="login" class="dk.action.LoginAction">
+			<result>/WEB-INF/page/manger.jsp</result>
+			<result name="error">/login.jsp</result>
+			<result name="input">/login.jsp</result>
+		</action> 
+		<!-- 使用拦截器  -->
+		<action name="TimeAction" class="dk.action.TimeAction" >
+			<result>success.jsp</result>
+			<interceptor-ref name="timer"></interceptor-ref>
+		</action>
+		
+		<action name="auth" class="dk.action.AuthAction">
+			<result>/WEB-INF/page/manger.jsp</result>
+			<interceptor-ref name="mystack"></interceptor-ref>
+			<result name="login">/login.jsp</result>
+		</action>
+		
+		
+		
+	</package>
+	<!-- 使用通配符需要使用该参数 -->
+</struts>
